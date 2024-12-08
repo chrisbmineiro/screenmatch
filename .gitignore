@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/src/main/java/br/com/alura/screenmatch/principal/Playground.java
 
 ### STS ###
 .apt_generated
