@@ -3,6 +3,7 @@ package br.com.alura.screenmatch.principal;
 import br.com.alura.screenmatch.models.DadosSerie;
 import br.com.alura.screenmatch.models.DadosTemporada;
 import br.com.alura.screenmatch.models.Serie;
+import br.com.alura.screenmatch.repository.SerieRepository;
 import br.com.alura.screenmatch.services.ConsumoAPI;
 import br.com.alura.screenmatch.services.ConverteDados;
 
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Principal {
 
@@ -19,7 +19,11 @@ public class Principal {
     private ConverteDados conversor = new ConverteDados();
     private final String URL_BASE = "https://www.omdbapi.com/?t=";
     private final String API_KEY = "&apikey=6585022c";
-    private List<DadosSerie> dadosSeries = new ArrayList<>();
+    // private List<DadosSerie> dadosSeries = new ArrayList<>();
+    private SerieRepository repository;
+    public Principal(SerieRepository repository){
+        this.repository = repository;
+    }
 
     public void exibeMenu() {
         var opcao = -1;
@@ -57,8 +61,10 @@ public class Principal {
 
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
+        Serie serie = new Serie(dados);
         System.out.println(dados);
-        dadosSeries.add(dados);
+        repository.save(serie);
+        // dadosSeries.add(dados);
     }
 
     private DadosSerie getDadosSerie() {
@@ -83,14 +89,12 @@ public class Principal {
 
     private void listarSeriesBuscadas() {
         // verificando se a lista esta vazia.
-        if (dadosSeries.isEmpty()) {
-            System.out.println("Nenhuma série foi buscada ainda.");
-            return;
-        }
-
-        List<Serie> series = dadosSeries.stream()
-                .map(d -> new Serie(d))
-                .collect(Collectors.toList());
+//        if (dadosSeries.isEmpty()) {
+//            System.out.println("Nenhuma série foi buscada ainda.");
+//            return;
+//        }
+        // buscando no banco de dados as séries
+        List<Serie> series = repository.findAll();
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
