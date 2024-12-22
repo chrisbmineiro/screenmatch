@@ -1,9 +1,6 @@
 package br.com.alura.screenmatch.principal;
 
-import br.com.alura.screenmatch.models.DadosSerie;
-import br.com.alura.screenmatch.models.DadosTemporada;
-import br.com.alura.screenmatch.models.Episodio;
-import br.com.alura.screenmatch.models.Serie;
+import br.com.alura.screenmatch.models.*;
 import br.com.alura.screenmatch.repository.SerieRepository;
 import br.com.alura.screenmatch.services.ConsumoAPI;
 import br.com.alura.screenmatch.services.ConverteDados;
@@ -35,6 +32,7 @@ public class Principal {
                 4 - Buscar série por titulo
                 5 - Buscar série por ator
                 6 - Buscar top 5
+                7 - Buscar séries por categoria
                 
                 0 - Sair
                 """;
@@ -62,6 +60,8 @@ public class Principal {
                 case 6:
                     buscarTop5Series();
                     break;
+                case 7:
+                    buscarSeriesPorCategoria();
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -158,5 +158,14 @@ public class Principal {
         List<Serie> seriesTop = repository.findTop5ByOrderByAvaliacaoDesc();
         seriesTop.forEach(s ->
                 System.out.println(s.getTitulo() + " avaliação: " + s.getAvaliacao()));
+    }
+
+    private void buscarSeriesPorCategoria() {
+        System.out.println("Escolha a categoria/genero: ");
+        var nomeGenero = leitura.nextLine();
+        Categoria categoria = Categoria.fromPortugues(nomeGenero);
+        List<Serie> seriesPorCategoria = repository.findByGenero(categoria);
+        System.out.println("Séries da categoria: " + nomeGenero);
+        seriesPorCategoria.forEach(System.out::println);
     }
 }
